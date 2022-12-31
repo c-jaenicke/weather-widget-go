@@ -13,7 +13,7 @@ func main() {
 	args := os.Args[1:]
 
 	if len(args) < 2 {
-		fmt.Fprintf(os.Stderr, "Invalid amount of arguments provided! usage: <small|full|forecast> <city name,state code,country code> ")
+		fmt.Fprintf(os.Stderr, "Invalid amount of arguments provided! usage: <small|full|forecast> <city name,state code,country code|.env> <path to env file>")
 		os.Exit(1)
 	}
 
@@ -31,10 +31,14 @@ func main() {
 }
 
 func getEnv(key string) string {
-	err := godotenv.Load("./.env")
+	if len(os.Args) < 4 {
+		log.Fatalf("path to .env file not given")
+	}
+
+	err := godotenv.Load(os.Args[3])
 
 	if err != nil {
-		log.Fatalf("Cant load .env file")
+		log.Fatalf("Failed to load .env file: " + err.Error())
 	}
 
 	return os.Getenv(key)

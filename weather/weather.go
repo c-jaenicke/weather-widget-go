@@ -81,10 +81,14 @@ func geocodeLocation(location string) (lat float64, lon float64, name string) {
 // get environment variables from .env file
 // file needs to be in top folder next to main.go
 func getEnv(key string) string {
-	err := godotenv.Load("./.env")
+	if len(os.Args) < 4 {
+		log.Fatalf("path to .env file not given")
+	}
+
+	err := godotenv.Load(os.Args[3])
 
 	if err != nil {
-		log.Fatalf("Cant load .env file")
+		log.Fatalf("Failed to load .env file: " + err.Error())
 	}
 
 	return os.Getenv(key)
